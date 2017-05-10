@@ -1,2 +1,2 @@
 #!/bin/bash
-generate-md --layout jasonm23-foghorn --input ./md-source/ --output .
+generate-md --layout jasonm23-markdown --input ./md-source/ --output .
