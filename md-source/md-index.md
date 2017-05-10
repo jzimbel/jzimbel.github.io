@@ -1,3 +1,4 @@
+![It me!](assets/photo.jpg)
 # Jon Zimbel
 
 Welcome to my (somewhat austere) personal page. I'm a recent *cum laude* graduate
