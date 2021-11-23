@@ -20,13 +20,17 @@
       display: grid;
       width: 100%;
       height: 100%;
-      grid-template-columns: repeat(40, 1fr);
+      grid-template-columns: repeat(auto-fill, 40px);
+      grid-template-rows: repeat(auto-fill, 40px);
+      gap: 0;
+      overflow: hidden;
     }
 
     .cell--a,
     .cell--b {
       position: relative;
-      aspect-ratio: 1;
+      min-width: 40px;
+      min-height: 40px;
       overflow: hidden;
     }
 
@@ -81,8 +85,13 @@
 
     const sleep = timeoutMs => new Promise(resolve => setTimeout(resolve, timeoutMs));
 
+    const getNumCells = () => {
+      const { clientWidth: width, clientHeight: height } = document.getElementById("container");
+      return Math.ceil(width / 40) * Math.ceil(height / 40);
+    };
+
     const generateCells = () =>
-      Array(1000)
+      Array(getNumCells())
         .fill()
         .map(() => {
           const cell = document.createElement("div");
@@ -118,7 +127,7 @@
       updateCellsLoop(cells, randomChoice(cells.map((_, i) => i)));
     };
 
-    const main = async () => {
+    const main = () => {
       const cells = generateCells();
       setupDom(cells);
       updateCellsLoop(cells);
