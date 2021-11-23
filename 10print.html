@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>10PRINT</title>
+  <style>
+    body {
+      position: relative;
+      background: #343D46;
+      width: 100vw;
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    #container {
+      display: grid;
+      width: 100%;
+      height: 100%;
+      grid-template-columns: repeat(40, 1fr);
+    }
+
+    .cell--a,
+    .cell--b {
+      position: relative;
+      aspect-ratio: 1;
+      overflow: hidden;
+    }
+
+    .background {
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: repeating-linear-gradient(0deg, transparent, transparent 48%, #A3CE9E 48%, #A3CE9E 52%, transparent 52%, transparent 100%);
+    }
+
+    .cell--a>.background {
+      animation: rotate-right 0.25s ease-out forwards;
+    }
+
+    .cell--b>.background {
+      animation: rotate-left 0.25s ease-out forwards;
+    }
+
+    @keyframes rotate-right {
+      0% {
+        transform: rotate(-45deg);
+      }
+
+      100% {
+        transform: rotate(45deg);
+      }
+    }
+
+    @keyframes rotate-left {
+      0% {
+        transform: rotate(45deg);
+      }
+
+      100% {
+        transform: rotate(-45deg);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="container"></div>
+  <script>
+    const randomInt = max => Math.floor(Math.random() * max);
+    const randomChoice = arr => arr[randomInt(arr.length)];
+
+    const getArrayItemPicker = items => () => randomChoice(items);
+
+    const randomClassName = getArrayItemPicker(["cell--a", "cell--b"]);
+
+    const sleep = timeoutMs => new Promise(resolve => setTimeout(resolve, timeoutMs));
+
+    const generateCells = () =>
+      Array(1000)
+        .fill()
+        .map(() => {
+          const cell = document.createElement("div");
+          cell.className = randomClassName();
+
+          const backgroundEl = document.createElement("div");
+          backgroundEl.className = "background";
+
+          cell.appendChild(backgroundEl);
+          return cell;
+        });
+
+    const setupDom = cells => {
+      const container = document.getElementById("container");
+
+      cells.forEach(cell => {
+        container.appendChild(cell);
+      });
+    };
+
+    const updateSegment = async (cells, i) => {
+      cells[i].className = randomClassName();
+      await sleep(50);
+      if (randomChoice([...Array(10).fill(true), false])) {
+        updateSegment(cells, (i + 1) % cells.length);
+      }
+    }
+
+    const updateCellsLoop = async (cells, i = 0) => {
+      updateSegment(cells, i);
+      await sleep(100);
+
+      updateCellsLoop(cells, randomChoice(cells.map((_, i) => i)));
+    };
+
+    const main = async () => {
+      const cells = generateCells();
+      setupDom(cells);
+      updateCellsLoop(cells);
+    };
+
+    main();
+  </script>
+</body>
+
+</html>
